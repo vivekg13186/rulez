@@ -1,3 +1,5 @@
+
+
 function test1() {
   const rules = [
     ["age", "country", "@status"],

@@ -57,6 +57,49 @@ console.log(res1.trace); // Trace of executed rules
 
 Check out `demo.html` in the `demo` folder for a live example.
 
+## Rule JSON Format
+
+The first line represents the header columns: the name of the field.  
+If this is an output field, prefix the name with `@`.
+
+The following rows represent conditions. Each cell contains a condition expression as follows:
+
+- **Operator with argument:** `op arg` like `> 12`, `<= 12`, `=~ v*k`  ,`.. 23 45`
+- **Value only:** like `USD`, `true`, `12` — this is treated as an equality (`=`) operator  
+- **null:** the condition is ignored  
+
+Example:
+
+```json
+[
+  ["age", "country", "married", "@status"],
+  ["> 18", "=~ U*", true, "adult-us"],
+  ["> 65", "US", false, "senior-us"],
+  ["> 18", "CA", null, "adult-ca"]
+]
+```
+
+## Priority / Salience
+
+If multiple row conditions match, they are executed in the order of the rows
+
+
+## Conditions
+
+| =   | Equal to; applies to strings, numbers, and booleans                                                                  |
+|-----|--------------------------------------------------------------------------------------------------------------|
+| !=  | Not equal to; applies to strings, numbers, and booleans                                                         |
+| >   | Greater than, numbers only                                                                                   |
+| <   | Less than, numbers only                                                                                      |
+| >=  | Greater than equal, numbers only                                                                             |
+| <=  | Less than equal, numbers only                                                                                |
+| ..  | Between; e.g., .. 20 30 means greater than 20 and less than 30                     |
+| =~  | String pattern match; use * to match any character and ? for a single character |
+
+```
+ - `v*i` matches `v00i`, `vxxxi`, etc.  
+ - `v?i` matches `v0i`, `v1i`, etc. 
+```
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests for new features, bug fixes, or improvements.

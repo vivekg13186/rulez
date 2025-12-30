@@ -164,7 +164,7 @@ class Action {
     if (ctx) ctx.actionFired(this);
     fact[this.lhs] = this.value;
     if (fact[this.lhs] !== undefined) {
-      console.warn(`Overwriting '${this.lhs}'`);
+      ;//console.warn(`Overwriting '${this.lhs}'`);
     }
     fact[this.lhs] = this.value;
   }
