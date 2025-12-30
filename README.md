@@ -101,6 +101,11 @@ If multiple row conditions match, they are executed in the order of the rows
  - `v*i` matches `v00i`, `vxxxi`, etc.  
  - `v?i` matches `v0i`, `v1i`, etc. 
 ```
+
+## Demo
+
+![/wiki/demo.png](/wiki/demo.png)
+
 ## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests for new features, bug fixes, or improvements.
