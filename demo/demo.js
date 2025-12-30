@@ -19,6 +19,7 @@ document.getElementById("run").addEventListener("click", () => {
     4
   );
   const el = document.getElementById("diagram");
+  el.innerHTML="";
   var dia_code = traceToDot(res1.trace);
   console.log(dia_code);
   Viz.instance().then((viz) => {

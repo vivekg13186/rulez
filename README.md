@@ -1,0 +1,66 @@
+# Rulez
+
+**Rulez** is a lightweight, compact rule engine that runs directly in the browser. It allows you to define and execute rules on client-side applications without any dependencies. Perfect for complex screens where dynamic rule evaluation is required.
+
+## Objective
+
+The goal of Rulez is to provide a simple, fast, and extensible rule engine that can be embedded in browser applications. It supports JSON-style rule definitions and provides tracing capabilities to debug rule execution.
+
+## Features
+
+- Single JavaScript file — easy to include in any project  
+- No external dependencies  
+- Rete-like rule structure for flexibility  
+- Rule caching for better performance  
+- JSON-style rule input (no custom DSL required)  
+- Lightweight and easy to understand  
+- Execution tracing to visualize steps  
+- Easily extendable for custom logic  
+
+## Installation
+
+Simply include `rulez.js` in your project:
+
+```html
+<script type="module" src="rulez.js"></script>
+```
+
+Or import it in your JavaScript/TypeScript project:
+
+```js
+import { RuleParser, traceToDot } from "./rulez.js";
+```
+
+## Usage
+
+Here is a minimal example:
+
+```js
+import { RuleParser, traceToDot } from "./rulez.js";
+
+const rules = [
+  ["age", "country", "@status"],
+  ["> 18", "US", "adult-us"],
+  ["> 65", "US", "senior-us"],
+  ["> 18", "CA", "adult-ca"],
+];
+
+const parser = new RuleParser();
+const engine = parser.parse(rules);
+
+const fact1 = { age: 20, country: "US" };
+const res1 = engine.evaluate(fact1);
+
+console.log(res1.fact);  // Resulting fact after rule evaluation
+console.log(res1.trace); // Trace of executed rules
+```
+
+Check out `demo.html` in the `demo` folder for a live example.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests for new features, bug fixes, or improvements.
+
+## License
+
+MIT License
