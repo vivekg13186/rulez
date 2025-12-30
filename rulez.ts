@@ -1,3 +1,6 @@
+/*
+rulez - version 0.1
+*/
 function hashRecord(data: Record<string, ValueType>) {
   return Object.keys(data)
     .sort()
