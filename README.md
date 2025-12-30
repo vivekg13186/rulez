@@ -82,6 +82,7 @@ Example:
 ## Priority / Salience
 
 If multiple row conditions match, they are executed in the order of the rows
+`engine.everseOrder=true` to reverse the order of execution
 
 
 ## Conditions

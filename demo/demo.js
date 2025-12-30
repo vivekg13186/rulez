@@ -5,9 +5,13 @@ document.getElementById("run").addEventListener("click", () => {
   const engine = parser.parse(
     JSON.parse(document.getElementById("ruleTable").value)
   );
+  engine.reverseOrder=document.getElementById("rev").checked;
+  var t1= performance.now();
   var res1 = engine.evaluate(
     JSON.parse(document.getElementById("ruleInput").value)
   );
+  var t2= performance.now();
+  document.getElementById("timetaken").innerHTML=`${(t2-t1).toFixed(2)} ms`
   document.getElementById("ruleResult").value = JSON.stringify(
     res1.fact,
     null,

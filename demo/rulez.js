@@ -161,6 +161,7 @@ export class RuleEngine {
     betas;
     cache = new Map();
     enableCache;
+    reverseOrder = false;
     constructor(alphaRoots, betas) {
         this.alphaRoots = alphaRoots;
         this.betas = betas;
@@ -179,12 +180,23 @@ export class RuleEngine {
         }
         const ctx = new EvaluationContext();
         this.alphaRoots.forEach((alpha) => alpha.activate(fact, ctx));
-        ctx
-            .getReadyBetas()
-            .sort((a, b) => b.salience - a.salience)
-            .forEach((beta) => beta.fire(fact, ctx)); // pass context to record actions
+        if (this.reverseOrder) {
+            ctx
+                .getReadyBetas()
+                .sort((a, b) => a.salience - b.salience)
+                .forEach((beta) => beta.fire(fact, ctx));
+        }
+        else {
+            ctx
+                .getReadyBetas()
+                .sort((a, b) => b.salience - a.salience)
+                .forEach((beta) => beta.fire(fact, ctx));
+        }
         if (this.enableCache) {
-            this.cache.set(hash, { fact: structuredClone(fact), trace: structuredClone(ctx.trace) });
+            this.cache.set(hash, {
+                fact: structuredClone(fact),
+                trace: structuredClone(ctx.trace),
+            });
         }
         return { fact, trace: ctx.trace };
     }
@@ -287,7 +299,7 @@ export class RuleParser {
 function escapeMermaidLabel(label) {
     return label
         .replace(/\\/g, " ") // escape backslash
-        .replace(/"/g, '&quot;') // escape double quotes
+        .replace(/"/g, "&quot;") // escape double quotes
         .replace(/\[/g, " ") // escape [
         .replace(/\]/g, " ") // escape ]
         .replace(/\|/g, " ") // escape |
@@ -295,7 +307,7 @@ function escapeMermaidLabel(label) {
         .replace(/>/g, "&gt;"); // replace >
 }
 export function traceToDot(trace) {
-    const headers = ["start[label=\"Start\"];", "end[label=\"End\"];"];
+    const headers = ['start[label="Start"];', 'end[label="End"];'];
     const links = [];
     let lastNodeId = "start";
     trace.forEach((event, index) => {

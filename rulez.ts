@@ -48,7 +48,7 @@ function isMatch(s: string, p: string) {
   return j === p.length;
 }
 
- class Condition {
+class Condition {
   lhs: string;
   op: Operator;
   rhs: CompareType;
@@ -208,6 +208,7 @@ export class RuleEngine {
     { fact: Record<string, ValueType>; trace: TraceEvent[] }
   > = new Map();
   enableCache: boolean;
+  reverseOrder: boolean = false;
 
   constructor(alphaRoots: AlphaNode[], betas: BetaNode[]) {
     this.alphaRoots = alphaRoots;
@@ -234,19 +235,28 @@ export class RuleEngine {
     const ctx = new EvaluationContext();
     this.alphaRoots.forEach((alpha) => alpha.activate(fact, ctx));
 
-    ctx
-      .getReadyBetas()
-      .sort((a, b) => b.salience - a.salience)
-      .forEach((beta) => beta.fire(fact, ctx)); // pass context to record actions
+    if (this.reverseOrder) {
+      ctx
+        .getReadyBetas()
+        .sort((a, b) => a.salience - b.salience)
+        .forEach((beta) => beta.fire(fact, ctx));
+    } else {
+      ctx
+        .getReadyBetas()
+        .sort((a, b) => b.salience - a.salience)
+        .forEach((beta) => beta.fire(fact, ctx));
+    }
 
     if (this.enableCache) {
-      this.cache.set(hash, { fact: structuredClone(fact), trace: structuredClone(ctx.trace) });
+      this.cache.set(hash, {
+        fact: structuredClone(fact),
+        trace: structuredClone(ctx.trace),
+      });
     }
 
     return { fact, trace: ctx.trace };
   }
 }
-
 
 class Header {
   public name: string;
@@ -359,20 +369,19 @@ export class RuleParser {
 
 function escapeMermaidLabel(label: string): string {
   return label
-    .replace(/\\/g, " ")  // escape backslash
-    .replace(/"/g, '&quot;')    // escape double quotes
-    .replace(/\[/g, " ")   // escape [
-    .replace(/\]/g, " ")   // escape ]
-    .replace(/\|/g, " ")   // escape |
-    .replace(/</g, "&lt;")   // replace <
-    .replace(/>/g, "&gt;");  // replace >
+    .replace(/\\/g, " ") // escape backslash
+    .replace(/"/g, "&quot;") // escape double quotes
+    .replace(/\[/g, " ") // escape [
+    .replace(/\]/g, " ") // escape ]
+    .replace(/\|/g, " ") // escape |
+    .replace(/</g, "&lt;") // replace <
+    .replace(/>/g, "&gt;"); // replace >
 }
 
 export function traceToDot(trace: TraceEvent[]): string {
-  
-  const headers =["start[label=\"Start\"];","end[label=\"End\"];"];
-  const links=[]
- let lastNodeId = "start";
+  const headers = ['start[label="Start"];', 'end[label="End"];'];
+  const links = [];
+  let lastNodeId = "start";
 
   trace.forEach((event, index) => {
     const nodeId = `${event.type}_${index}`;
@@ -381,17 +390,22 @@ export function traceToDot(trace: TraceEvent[]): string {
     switch (event.type) {
       case "alpha":
         label = escapeMermaidLabel(`Alpha: ${event.id}`);
-        headers.push(`${nodeId}[label="${label}",shape="rectangle",color="red"];`)
+        headers.push(
+          `${nodeId}[label="${label}",shape="rectangle",color="red"];`
+        );
         break;
       case "beta":
-        headers.push(`${nodeId}[label="Beta: ${event.id}]",shape="diamond",color="blue"];`)
+        headers.push(
+          `${nodeId}[label="Beta: ${event.id}]",shape="diamond",color="blue"];`
+        );
         break;
       case "action":
-        headers.push(`${nodeId}[label="Action: ${event.id} = ${event.value}",shape="rectangle",color="green"];`)
+        headers.push(
+          `${nodeId}[label="Action: ${event.id} = ${event.value}",shape="rectangle",color="green"];`
+        );
         break;
     }
 
- 
     links.push(`${lastNodeId} -> ${nodeId};`);
     lastNodeId = nodeId;
   });
@@ -400,8 +414,5 @@ export function traceToDot(trace: TraceEvent[]): string {
   return `digraph{ 
 ${headers.join("\n")}
 ${links.join("\n")}
-};`
+};`;
 }
-
-
-
