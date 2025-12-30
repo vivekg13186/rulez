@@ -163,9 +163,9 @@ class Action {
   execute(fact: Record<string, ValueType>, ctx?: EvaluationContext) {
     if (ctx) ctx.actionFired(this);
     fact[this.lhs] = this.value;
-    if (fact[this.lhs] !== undefined) {
+    /*if (fact[this.lhs] !== undefined) {
       ;//console.warn(`Overwriting '${this.lhs}'`);
-    }
+    }*/
     fact[this.lhs] = this.value;
   }
 }
