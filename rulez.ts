@@ -241,12 +241,12 @@ export class RuleEngine {
     if (this.reverseOrder) {
       ctx
         .getReadyBetas()
-        .sort((a, b) => a.salience - b.salience)
+        .sort((a, b) => b.salience - a.salience)
         .forEach((beta) => beta.fire(fact, ctx));
     } else {
       ctx
         .getReadyBetas()
-        .sort((a, b) => b.salience - a.salience)
+        .sort((a, b) => a.salience - b.salience)
         .forEach((beta) => beta.fire(fact, ctx));
     }
 

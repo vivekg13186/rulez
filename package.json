@@ -5,12 +5,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "compile-demo": "npx tsc rulez.ts --target es2024 -outDir ./demo",
-    "compile-test": "npx tsc rulez.ts --target es2024 -outDir ./test"
+    "compile":"npx tsc -p tsconfig.build.json -outDir ./dist && cp ./dist/rulez.js ./test && cp ./dist/rulez.js ./demo",
+    "test" :"npx vitest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "assertion-error": "^2.0.1",
+    "vitest": "^4.0.16"
   }
 }

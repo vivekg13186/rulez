@@ -90,14 +90,13 @@ Cache is disabled by default .`engine.enableCache=true` to enable caching.
 
 ## Conditions
 
-| =   | Equal to; applies to strings, numbers, and booleans                                                                  |
-|-----|--------------------------------------------------------------------------------------------------------------|
-| !=  | Not equal to; applies to strings, numbers, and booleans                                                         |
+| =   | Equal to; applies to  numbers                                                            |
+| !=  | Not equal to; applies to  numbers                                                        |
 | >   | Greater than, numbers only                                                                                   |
 | <   | Less than, numbers only                                                                                      |
 | >=  | Greater than equal, numbers only                                                                             |
 | <=  | Less than equal, numbers only                                                                                |
-| ..  | Between; e.g., .. 20 30 means greater than 20 and less than 30                     |
+| ..  | Between; e.g., `.. 20,30` means greater than 20 and less than 30                     |
 | =~  | String pattern match; use * to match any character and ? for a single character |
 
 ```
