@@ -82,8 +82,11 @@ Example:
 ## Priority / Salience
 
 If multiple row conditions match, they are executed in the order of the rows
-`engine.everseOrder=true` to reverse the order of execution
+`engine.reverseOrder=true` to reverse the order of execution
 
+## Caching
+
+Cache is disabled by default .`engine.enableCache=true` to enable caching.
 
 ## Conditions
 

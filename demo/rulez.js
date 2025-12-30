@@ -296,7 +296,7 @@ export class RuleParser {
         return this.alphaMap.get(cond.id);
     }
 }
-function escapeMermaidLabel(label) {
+function escapeLabel(label) {
     return label
         .replace(/\\/g, " ") // escape backslash
         .replace(/"/g, "&quot;") // escape double quotes
@@ -315,7 +315,7 @@ export function traceToDot(trace) {
         let label = "";
         switch (event.type) {
             case "alpha":
-                label = escapeMermaidLabel(`Alpha: ${event.id}`);
+                label = escapeLabel(`Alpha: ${event.id}`);
                 headers.push(`${nodeId}[label="${label}",shape="rectangle",color="red"];`);
                 break;
             case "beta":

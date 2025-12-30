@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "compile-browser": "npx tsc rulez.ts --target es2024 -outDir ./demo"
+    "compile-demo": "npx tsc rulez.ts --target es2024 -outDir ./demo",
+    "compile-test": "npx tsc rulez.ts --target es2024 -outDir ./test"
   },
   "author": "",
   "license": "ISC",
