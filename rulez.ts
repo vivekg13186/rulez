@@ -403,36 +403,6 @@ private parseCondition(lhs: string, exp: any): Condition | null {
     return new Condition(lhs,result.op,result.value);
   }
   return null;
-    /*if (typeof exp === "number" || typeof exp === "boolean") {
-      return new Condition(lhs, "=", exp);
-    }
-
-    if (typeof exp === "string") {
-      if (!exp.includes(" ")) {
-        return new Condition(lhs, "=", exp);
-      }
-
-      const [op, raw] = exp.split(" ", 2);
-      this.validateOperator(op);
-
-      let rhs: CompareType;
-
-      if (op === "..") {
-        const parts = raw.split(",").map(Number);
-        if (parts.length !== 2 || parts.some(isNaN)) {
-          throw new Error(`Invalid range syntax: ${raw}`);
-        }
-        rhs = parts;
-      } else if (op === "=~") {
-        rhs = raw;
-      } else {
-        rhs = isNaN(Number(raw)) ? raw : Number(raw);
-      }
-
-      return new Condition(lhs, op as Operator, rhs);
-    }
-
-    return null;*/
 
   }
 

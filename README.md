@@ -135,16 +135,20 @@ function traceToDot(trace: TraceEvent[]):string{}
  - `v?i` matches `v0i`, `v1i`, etc. 
 ```
 
-condition values always as string value in json example
+condition values always represent as string value in json 
+here is how is expression evaluated
 
-- "23.23" - number
-- "'hello'" - string enclosed in single quotes
-- "true" "false"- boolean values
-- "> 23" ">= 23" ".. 23,23" - compare operator
-- "=~ 'm>tach string *'". - string match 
+| Type | Sample values | Evaluate as | 
+| ---- | ------ | -- |
+| Number constant |  "23.23"  | lhs === 23.23 |
+| String constant |  "'hello'"  | lhs ==="hello" |
+| Boolean constant | "true" | lhs === true |
+| Compare operator | "> 23" | lhs > 23 |
+| String patter | "=~ 'm>tach string *'" | match_pattern(lhs,'m>tach string *') |
+
 
 ## Demo
-
+check demo/demo.html 
 ![/wiki/demo.png](/wiki/demo.png)
 
 ## Contributing
