@@ -82,6 +82,7 @@
   />
   <body>
     <div id="app">
+        <h3>Designer</h3>
       <div class="toolbar">
         <button @click="addCondition">Add Condition</button>
         <button @click="addAction">Add Action</button>
@@ -92,6 +93,7 @@
 
       <div class="panel">
         <div class="inner-panel">
+            
           <table>
             <thead>
               <tr>
@@ -191,7 +193,7 @@
           const headers = ref(["name", "age"]);
           const actions = ref(["message"]);
           const rows = ref([
-            { conditions: ["=~ v*iek", "23"], actions: ["vivek"] },
+            { conditions: ["=~ \'v*iek\'", "23"], actions: ["vivek"] },
           ]);
           const addCondition = () => {
             headers.value.push("condition_" + headers.value.length);
@@ -229,14 +231,12 @@
               row.actions.splice(colIndex, 1);
             });
           };
+          const VALID_REGEX = /^(\s*(true|false|-|\.\.\s*[+-]?\d+(?:\.\d*)?\s*,\s*[+-]?\d+(?:\.\d*)?|=~\s*'(?:\\.|[^\\'])*'|(?:!=|>=|<=|=|>|<)\s*[+-]?\d+(?:\.\d*)?|[+-]?\d+(?:\.\d*)?|'(?:\\.|[^\\'])*')\s*)$/;
+  
           //validate
           const validateCondition = (value) => {
             if (!value) return false;
-            try {
-              return /^[a-zA-Z0-9=~* ]+$/.test(value);
-            } catch {
-              return false;
-            }
+            return VALID_REGEX.test(value);
           };
 
           const validateAction = (value) => {

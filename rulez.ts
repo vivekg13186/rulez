@@ -279,6 +279,65 @@ class Header {
   }
 }
 
+function parseExp(input:string) :{
+  op:Operator,
+  value:CompareType
+ 
+}|null{
+  const s = input.trim();
+
+  // ---- Combined validation regex ----
+  const VALID_REGEX = /^(\s*(true|false|null|\.\.\s*[+-]?\d+(?:\.\d*)?\s*,\s*[+-]?\d+(?:\.\d*)?|=~\s*'(?:\\.|[^\\'])*'|(?:!=|>=|<=|=|>|<)\s*[+-]?\d+(?:\.\d*)?|[+-]?\d+(?:\.\d*)?|'(?:\\.|[^\\'])*')\s*)$/;
+  if (!VALID_REGEX.test(s)) throw new Error("Invalid expression: " + input);
+
+  // ---- boolean and null literals ----
+  if (s === "true") return {   op : '=',value: true };
+  if (s === "false") return {  op : '=', value: false };
+  if (s === "null") return null;
+
+  // ---- range: ..number,number ----
+  if (s.startsWith("..")) {
+    const match = s.match(/\.\.\s*([+-]?\d+(?:\.\d*)?)\s*,\s*([+-]?\d+(?:\.\d*)?)/);
+    if(!match) throw `Invalid expression ${s}`
+    return {
+      op: "..",
+      value: [ parseFloat(match[1]),  parseFloat(match[2])]
+    };
+  }
+
+  // ---- regex match: =~ 'string' (allow spaces) ----
+  if (s.startsWith("=~")) {
+    const match = s.match(/=~\s*('(\\.|[^\\'])*')/);
+    if(!match) throw `Invalid expression ${s}`
+    const str = match[1];
+ 
+    return {
+      op: "=~",
+      value: str.slice(1, -1).replace(/\\'/g, "'").replace(/\\\\/g, "\\")
+    };
+  }
+
+  // ---- comparison operators ----
+  const ops = ["!=", ">=", "<=", "=", ">", "<"];
+  for (const op of ops) {
+    if (s.startsWith(op)) {
+      const numPart = s.slice(op.length).trim();
+      return {  op: op as Operator, value: Number(numPart) };
+    }
+  }
+
+  // ---- single-quoted string ----
+  if (/^'(?:\\.|[^\\'])*'$/.test(s)) {
+    const value = s.slice(1, -1).replace(/\\'/g, "'").replace(/\\\\/g, "\\");
+    return { op: "=", value };
+  }
+
+  // ---- number ----
+  return { op: "=", value: Number(s) };
+}
+
+
+
 export class RuleParser {
   private alphaMap = new Map<string, AlphaNode>();
 
@@ -339,7 +398,12 @@ export class RuleParser {
   }
 
 private parseCondition(lhs: string, exp: any): Condition | null {
-    if (typeof exp === "number" || typeof exp === "boolean") {
+  var result = parseExp(exp);
+  if(result){
+    return new Condition(lhs,result.op,result.value);
+  }
+  return null;
+    /*if (typeof exp === "number" || typeof exp === "boolean") {
       return new Condition(lhs, "=", exp);
     }
 
@@ -368,7 +432,8 @@ private parseCondition(lhs: string, exp: any): Condition | null {
       return new Condition(lhs, op as Operator, rhs);
     }
 
-    return null;
+    return null;*/
+
   }
 
 

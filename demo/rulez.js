@@ -222,6 +222,56 @@ class Header {
         this.name = name;
     }
 }
+function parseExp(input) {
+    const s = input.trim();
+    // ---- Combined validation regex ----
+    const VALID_REGEX = /^(\s*(true|false|null|\.\.\s*[+-]?\d+(?:\.\d*)?\s*,\s*[+-]?\d+(?:\.\d*)?|=~\s*'(?:\\.|[^\\'])*'|(?:!=|>=|<=|=|>|<)\s*[+-]?\d+(?:\.\d*)?|[+-]?\d+(?:\.\d*)?|'(?:\\.|[^\\'])*')\s*)$/;
+    if (!VALID_REGEX.test(s))
+        throw new Error("Invalid expression: " + input);
+    // ---- boolean and null literals ----
+    if (s === "true")
+        return { op: '=', value: true };
+    if (s === "false")
+        return { op: '=', value: false };
+    if (s === "null")
+        return null;
+    // ---- range: ..number,number ----
+    if (s.startsWith("..")) {
+        const match = s.match(/\.\.\s*([+-]?\d+(?:\.\d*)?)\s*,\s*([+-]?\d+(?:\.\d*)?)/);
+        if (!match)
+            throw `Invalid expression ${s}`;
+        return {
+            op: "..",
+            value: [parseFloat(match[1]), parseFloat(match[2])]
+        };
+    }
+    // ---- regex match: =~ 'string' (allow spaces) ----
+    if (s.startsWith("=~")) {
+        const match = s.match(/=~\s*('(\\.|[^\\'])*')/);
+        if (!match)
+            throw `Invalid expression ${s}`;
+        const str = match[1];
+        return {
+            op: "=~",
+            value: str.slice(1, -1).replace(/\\'/g, "'").replace(/\\\\/g, "\\")
+        };
+    }
+    // ---- comparison operators ----
+    const ops = ["!=", ">=", "<=", "=", ">", "<"];
+    for (const op of ops) {
+        if (s.startsWith(op)) {
+            const numPart = s.slice(op.length).trim();
+            return { op: op, value: Number(numPart) };
+        }
+    }
+    // ---- single-quoted string ----
+    if (/^'(?:\\.|[^\\'])*'$/.test(s)) {
+        const value = s.slice(1, -1).replace(/\\'/g, "'").replace(/\\\\/g, "\\");
+        return { op: "=", value };
+    }
+    // ---- number ----
+    return { op: "=", value: Number(s) };
+}
 export class RuleParser {
     alphaMap = new Map();
     parse(table) {
@@ -275,32 +325,41 @@ export class RuleParser {
         }
     }
     parseCondition(lhs, exp) {
-        if (typeof exp === "number" || typeof exp === "boolean") {
-            return new Condition(lhs, "=", exp);
-        }
-        if (typeof exp === "string") {
-            if (!exp.includes(" ")) {
-                return new Condition(lhs, "=", exp);
-            }
-            const [op, raw] = exp.split(" ", 2);
-            this.validateOperator(op);
-            let rhs;
-            if (op === "..") {
-                const parts = raw.split(",").map(Number);
-                if (parts.length !== 2 || parts.some(isNaN)) {
-                    throw new Error(`Invalid range syntax: ${raw}`);
-                }
-                rhs = parts;
-            }
-            else if (op === "=~") {
-                rhs = raw;
-            }
-            else {
-                rhs = isNaN(Number(raw)) ? raw : Number(raw);
-            }
-            return new Condition(lhs, op, rhs);
+        var result = parseExp(exp);
+        if (result) {
+            return new Condition(lhs, result.op, result.value);
         }
         return null;
+        /*if (typeof exp === "number" || typeof exp === "boolean") {
+          return new Condition(lhs, "=", exp);
+        }
+    
+        if (typeof exp === "string") {
+          if (!exp.includes(" ")) {
+            return new Condition(lhs, "=", exp);
+          }
+    
+          const [op, raw] = exp.split(" ", 2);
+          this.validateOperator(op);
+    
+          let rhs: CompareType;
+    
+          if (op === "..") {
+            const parts = raw.split(",").map(Number);
+            if (parts.length !== 2 || parts.some(isNaN)) {
+              throw new Error(`Invalid range syntax: ${raw}`);
+            }
+            rhs = parts;
+          } else if (op === "=~") {
+            rhs = raw;
+          } else {
+            rhs = isNaN(Number(raw)) ? raw : Number(raw);
+          }
+    
+          return new Condition(lhs, op as Operator, rhs);
+        }
+    
+        return null;*/
     }
     getOrCreateAlpha(cond) {
         if (!this.alphaMap.has(cond.id)) {

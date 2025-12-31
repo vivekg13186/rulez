@@ -135,6 +135,14 @@ function traceToDot(trace: TraceEvent[]):string{}
  - `v?i` matches `v0i`, `v1i`, etc. 
 ```
 
+condition values always as string value in json example
+
+- "23.23" - number
+- "'hello'" - string enclosed in single quotes
+- "true" "false"- boolean values
+- "> 23" ">= 23" ".. 23,23" - compare operator
+- "=~ 'm>tach string *'". - string match 
+
 ## Demo
 
 ![/wiki/demo.png](/wiki/demo.png)

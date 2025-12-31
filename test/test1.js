@@ -3,9 +3,9 @@
 function test1() {
   const rules = [
     ["age", "country", "@status"],
-    ["> 18", "US", "adult-us"],
-    ["> 65", "US", "senior-us"],
-    ["> 18", "CA", "adult-ca"],
+    ["> 18", "'US'", "adult-us"],
+    ["> 65", "'US'", "senior-us"],
+    ["> 18", "'CA'", "adult-ca"],
   ];
   const parser = new RuleParser();
   const engine = parser.parse(rules);
@@ -32,7 +32,7 @@ function test2() {
   const rules = [
     ["age", "name", "@segment"],
 
-    [".. 18,65", "=~ Jo*", "working-jo"],
+    [".. 18,65", "=~ 'Jo*'", "working-jo"],
     [">= 65", "=~ *son", "senior-son"],
     ["< 18", "=~ *", "minor"],
   ];

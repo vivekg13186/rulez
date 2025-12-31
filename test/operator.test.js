@@ -20,8 +20,8 @@ test("operator .. test", () => {
 test("operator =~ test", () => {
   var engine = new RuleParser().parse([
     ["a", "@b"],
-    ["=~ h?llo", "hello"],
-    ["=~ w?lc*e", "welcome"],
+    ["=~ 'h?llo'", "hello"],
+    ["=~ 'w?lc*e'", "welcome"],
   ]);
   expect(engine.evaluate({ a: "hello" }).fact).toStrictEqual({
     a: "hello",
@@ -82,8 +82,8 @@ test("operator = test", () => {
 test("operator boolean constant", () => {
   var engine = new RuleParser().parse([
     ["a", "@b"],
-    [true, true],
-    [false, false],
+    ['true', true],
+    ['false', false],
   ]);
   expect(engine.evaluate({ a: true }).fact).toStrictEqual({ a: true, b: true });
   expect(engine.evaluate({ a: false }).fact).toStrictEqual({
@@ -95,17 +95,17 @@ test("operator boolean constant", () => {
 test("operator string constant", () => {
   var engine = new RuleParser().parse([
     ["a", "@b"],
-    ["hello", "hello"],
+    ["'hello'", "hellob"],
   ]);
   expect(engine.evaluate({ a: "hello" }).fact).toStrictEqual({
     a: "hello",
-    b: "hello",
+    b: "hellob",
   });
 });
 test("operator number constant", () => {
   var engine = new RuleParser().parse([
     ["a", "@b"],
-    [22.3, "22.3"],
+    ['22.3', "22.3"],
   ]);
   expect(engine.evaluate({ a: 22.3 }).fact).toStrictEqual({
     a: 22.3,
