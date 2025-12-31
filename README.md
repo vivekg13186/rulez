@@ -40,9 +40,10 @@ import { RuleParser, traceToDot } from "./rulez.js";
 
 const rules = [
   ["age", "country", "@status"],
-  ["> 18", "US", "adult-us"],
-  ["> 65", "US", "senior-us"],
-  ["> 18", "CA", "adult-ca"],
+  ["> 18", "'US'", "adult-us"],
+  ["> 65", "'US'", "senior-us"],
+  ["> 18", "'CA'", "adult-ca"],
+  ["-", "'NZ'", "adult-ca"],
 ];
 
 const parser = new RuleParser();
@@ -66,7 +67,7 @@ The following rows represent conditions. Each cell contains a condition expressi
 
 - **Operator with argument:** `op arg` like `> 12`, `<= 12`, `=~ v*k`  ,`.. 23 45`
 - **Value only:** like `USD`, `true`, `12` — this is treated as an equality (`=`) operator  
-- **null:** the condition is ignored  
+- **-:** then condition is ignored  
 
 Example:
 
