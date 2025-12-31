@@ -187,7 +187,7 @@ export class RuleEngine {
             // return deep clones to avoid mutation
             return {
                 fact: structuredClone(cached.fact),
-                trace: structuredClone(cached.trace),
+                trace: this.enableTrace ? structuredClone(cached.trace) : [],
             };
         }
         const ctx = new EvaluationContext();

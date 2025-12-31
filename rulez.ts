@@ -184,11 +184,11 @@ interface TraceEvent {
 class EvaluationContext {
   private matches = new Map<BetaNode, number>();
   public trace: TraceEvent[] = [];
-  public enableTrace =false;
+  public enableTrace = false;
 
   markMatched(beta: BetaNode) {
     this.matches.set(beta, (this.matches.get(beta) ?? 0) + 1);
-    if(this.enableTrace){
+    if (this.enableTrace) {
       this.trace.push({ type: "beta", id: beta.id });
     }
   }
@@ -200,14 +200,14 @@ class EvaluationContext {
   }
 
   alphaFired(alpha: AlphaNode) {
-    if(this.enableTrace){
+    if (this.enableTrace) {
       this.trace.push({ type: "alpha", id: alpha.id });
     }
   }
 
   actionFired(action: Action) {
-    if(this.enableTrace){
-    this.trace.push({ type: "action", id: action.lhs, value: action.value });
+    if (this.enableTrace) {
+      this.trace.push({ type: "action", id: action.lhs, value: action.value });
     }
   }
 }
@@ -219,15 +219,14 @@ export class RuleEngine {
     string,
     { fact: Record<string, ValueType>; trace: TraceEvent[] }
   > = new Map();
-  enableCache: boolean =false;
+  enableCache: boolean = false;
   reverseOrder: boolean = false;
-enableTrace:boolean=false;
+  enableTrace: boolean = false;
   constructor(alphaRoots: AlphaNode[], betas: BetaNode[]) {
     this.alphaRoots = alphaRoots;
     this.betas = betas;
   }
 
-  
   evaluate(input: Record<string, ValueType>): {
     fact: Record<string, ValueType>;
     trace: TraceEvent[];
@@ -240,12 +239,12 @@ enableTrace:boolean=false;
       // return deep clones to avoid mutation
       return {
         fact: structuredClone(cached.fact),
-        trace: structuredClone(cached.trace),
+        trace: this.enableTrace ? structuredClone(cached.trace) : [],
       };
     }
 
     const ctx = new EvaluationContext();
-    ctx.enableTrace=this.enableTrace;
+    ctx.enableTrace = this.enableTrace;
     this.alphaRoots.forEach((alpha) => alpha.activate(fact, ctx));
 
     if (this.reverseOrder) {
@@ -339,7 +338,7 @@ export class RuleParser {
     }
   }
 
-  private parseCondition(lhs: string, exp: any): Condition | null {
+private parseCondition(lhs: string, exp: any): Condition | null {
     if (typeof exp === "number" || typeof exp === "boolean") {
       return new Condition(lhs, "=", exp);
     }
@@ -371,6 +370,7 @@ export class RuleParser {
 
     return null;
   }
+
 
   private getOrCreateAlpha(cond: Condition): AlphaNode {
     if (!this.alphaMap.has(cond.id)) {
