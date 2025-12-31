@@ -79,7 +79,7 @@ Example:
 ]
 ```
 
-## Priority / Salience
+## Priority
 
 If multiple row conditions match, they are executed in the order of the rows
 `engine.reverseOrder=true` to reverse the order of execution
@@ -87,6 +87,35 @@ If multiple row conditions match, they are executed in the order of the rows
 ## Caching
 
 Cache is disabled by default .`engine.enableCache=true` to enable caching.
+
+## Tracing 
+
+Tracing is disabled by default .`engine.enableTrace=true` to enable tracing.
+
+### API
+
+```typescript
+type ValueType = string | number | boolean;
+interface TraceEvent {
+  type: "alpha" | "beta" | "action";
+  id: string;
+  value?: ValueType;
+}
+
+class RuleParser{
+   parse(table: any[][]): RuleEngine {}
+}
+
+class RuleEngine {
+    
+  evaluate(input: Record<string, ValueType>): {
+    fact: Record<string, ValueType>;
+    trace: TraceEvent[];
+  } 
+}
+//returns a dot file diagram
+function traceToDot(trace: TraceEvent[]):string{}
+```
 
 ## Conditions
 

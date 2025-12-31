@@ -5,6 +5,7 @@ document.getElementById("run").addEventListener("click", () => {
   const engine = parser.parse(
     JSON.parse(document.getElementById("ruleTable").value)
   );
+  engine.enableTrace = true;
   engine.reverseOrder=document.getElementById("rev").checked;
   var t1= performance.now();
   var res1 = engine.evaluate(

@@ -1,5 +1,7 @@
 /*
-rulez - version 0.1
+rulez   : version 0.1
+author  : vivek g
+license : MIT
 */
 function hashRecord(data) {
     return Object.keys(data)
@@ -143,9 +145,12 @@ class Action {
 class EvaluationContext {
     matches = new Map();
     trace = [];
+    enableTrace = false;
     markMatched(beta) {
         this.matches.set(beta, (this.matches.get(beta) ?? 0) + 1);
-        this.trace.push({ type: "beta", id: beta.id });
+        if (this.enableTrace) {
+            this.trace.push({ type: "beta", id: beta.id });
+        }
     }
     getReadyBetas() {
         return [...this.matches.entries()]
@@ -153,22 +158,26 @@ class EvaluationContext {
             .map(([b]) => b);
     }
     alphaFired(alpha) {
-        this.trace.push({ type: "alpha", id: alpha.id });
+        if (this.enableTrace) {
+            this.trace.push({ type: "alpha", id: alpha.id });
+        }
     }
     actionFired(action) {
-        this.trace.push({ type: "action", id: action.lhs, value: action.value });
+        if (this.enableTrace) {
+            this.trace.push({ type: "action", id: action.lhs, value: action.value });
+        }
     }
 }
 export class RuleEngine {
     alphaRoots;
     betas;
     cache = new Map();
-    enableCache;
+    enableCache = false;
     reverseOrder = false;
+    enableTrace = false;
     constructor(alphaRoots, betas) {
         this.alphaRoots = alphaRoots;
         this.betas = betas;
-        this.enableCache = false;
     }
     evaluate(input) {
         const fact = structuredClone(input);
@@ -182,6 +191,7 @@ export class RuleEngine {
             };
         }
         const ctx = new EvaluationContext();
+        ctx.enableTrace = this.enableTrace;
         this.alphaRoots.forEach((alpha) => alpha.activate(fact, ctx));
         if (this.reverseOrder) {
             ctx
