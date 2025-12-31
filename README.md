@@ -74,9 +74,10 @@ Example:
 ```json
 [
   ["age", "country", "married", "@status"],
-  ["> 18", "=~ U*", true, "adult-us"],
-  ["> 65", "US", false, "senior-us"],
-  ["> 18", "CA", null, "adult-ca"]
+  ["> 18", "=~ 'U*'", true, "adult-us"],
+  ["> 65", "'US'", false, "senior-us"],
+  [".. 23 45", "'CA'", null, "adult-ca"],
+  ["-", "'NZ'", "adult-ca"],
 ]
 ```
 
